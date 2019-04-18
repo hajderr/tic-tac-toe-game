@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="index.css"/>
+</head>
+<body>
+  <div class="game">
+    <div class="game-board">
+        <div>        
+            <div class="board-row">          
+              <div class="square"></div>
+              <div class="square"></div>
+              <div class="square"></div>
+            </div>
+            <div class="board-row">
+              <div class="square"></div>
+              <div class="square"></div>
+              <div class="square"></div>
+            </div>
+            <div class="board-row">
+              <div class="square"></div>
+              <div class="square"></div>
+              <div class="square"></div>              
+            </div>
+          </div>
+      </div>
+      <div class="game-info">
+      </div>
+    </div>
+  </div>
+ 
+  <script type="text/javascript">
+    var game = {
+      xIsNext: false,
+      board: Array(9).fill(undefined),
+      winner: undefined
+    };
+
+    function gameFinished(board) {
+      var i;
+      for(i = 0; i < board.length; i++) {
+        if (!board[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function calculateWinner(board) {
+      var rows = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+        ]
+
+      for(var i = 0; i < rows.length; i++) {
+        var p = rows[i];
+        if(board[p[0]] && board[p[0]] === board[p[1]] && board[p[1]] === board[p[2]]) {
+          return p;
+        }
+      }
+      return undefined;
+    }
+  
+    var squares = document.getElementsByClassName('square');
+    for(var i = 0; i < squares.length; i++) {
+      squares[i].onclick = function(i) {
+        return function(e) {  
+          if (game.winner || game.board[i]) {   
+            return;
+          }
+
+          if (game.xIsNext) {
+            game.board[i] = 'X';
+            squares[i].innerHTML = 'X'
+            game.xIsNext = false;
+          } else {
+            game.board[i] = 'O';
+            squares[i].innerHTML = 'O'
+            game.xIsNext = true;
+          }
+
+          game.finished = gameFinished(game.board);
+          game.winner = calculateWinner(game.board);
+          var gameInfo = document.getElementsByClassName('game-info')[0];
+          if (game.winner) {   
+            gameInfo.innerHTML = 'Winner is ' + (game.xIsNext ? 'O' : 'X');
+            return;
+          } else if(game.finished) {
+            gameInfo.innerHTML = 'Draw';
+          } else {
+            gameInfo.innerHTML = 'Next Move ' + (game.xIsNext ? 'X' : 'O');
+          }
+        };
+      }(i)
+    }
+
+    var gameInfo = document.getElementsByClassName('game-info')[0];
+    gameInfo.innerHTML = 'Next Move ' + (game.xIsNext ? 'X' : 'O');
+
+    </script>
+</body>
+</html>
